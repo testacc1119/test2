@@ -2,16 +2,21 @@ package dyhas.bo.lab1
 
 import scala.annotation.tailrec
 
+enum List[+A] {
+  case Nil
+  case Cons(hd: A, tl: List[A])
 
-def foldLeft[A, B](xs: Seq[A], z: B)(op: (B, A) => B): B = 
-  @tailrec
-  def f(xs: Seq[A], acc: B): B = xs match {
-    case Seq()   => acc
-    case x +: xs => f(xs, op(acc, x))
+  def foldLeft[A, B](xs: List[A], z: B)(op: (B, A) => B): B = {
+    @tailrec
+    def f(xs: List[A], acc: B): B = {
+    xs match {
+      case Nil => acc
+      case Cons(xh, xt) => f(xt, op(acc, xh))
+    }
   }
-  f(xs, z)
-
+    f(xs, z)
+}
+}
 
 @main def hello: Unit = 
-  val l = List(1, 2, 3, 4)
-  println(foldLeft(l,0)(_ + _))
+  println("I work")
