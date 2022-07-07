@@ -76,7 +76,7 @@ enum List[+A] {
     def f(xs: List[B], window: Int, acc: List[List[B]]) : List[List[B]] = {
 
       @tailrec
-      def into(xs: List[B], window: Int, acc: List[List[B]], temp: List[B], count: Int) : List[List[B]] ={
+      def into(xs: List[B], window: Int, acc: List[List[B]], temp: List[B], count: Int) : List[List[B]] = {
         xs match 
           case Nil => 
             if count == window // if there's no sublist(temp) or if there's a sublist (temp), which lenght is less than window, just return acc
@@ -97,7 +97,35 @@ enum List[+A] {
     f(this, window, Nil)
   }
 
-//  def windowed[B >: A](step: Int, window: Int)
+  def windowed[B >: A](window: Int, step: Int): List[List[B]] = {
+    @tailrec
+    def f(xs: List[B], window: Int, step: Int, acc: List[List[B]], count: Int) : List[List[B]] = {
+
+      @tailrec
+      def into(xs: List[B], window: Int, acc: List[List[B]], temp: List[B], count: Int) : List[List[B]] = {
+        xs match 
+          case Nil => 
+            if count == window // if there's no sublist(temp) or if there's a sublist (temp), which length is less than window, just return acc
+              then acc.add_right(temp)
+            else acc
+          case Cons(head, tail) => {
+            if count < window 
+              then into (tail, window, acc, temp.add_right(head), count + 1) // if (count < window) -> push element into sublist and count++
+            else acc.add_right(temp) // if (count == window) -> push sublist (temp) in acc and return acc
+          }
+      }
+
+      xs match{
+        case Nil => acc
+        case Cons(head, tail) => {
+          if count < step - 1
+            then f(tail, window, step, acc, count + 1)
+          else f(tail, window, step, into(xs, window, acc, Nil, 0), 0)
+        }
+      }
+    }
+    f(this, window, step, Nil, step)
+  }
 
 }
 
@@ -108,9 +136,4 @@ object List:
     xs.foldRight(Nil: List[A]) { case (x, acc) => Cons(x, acc) }
 
 @main def hello: Unit = 
-  val expected = List(List(1, 2, 3), List(2, 3, 4))
-  var temp = List(1, 2, 3, 4)
-  val actual = temp.sliding(3)
-  println(expected.toString)
-  println("\n")
-  println(actual.toString)
+  println("It works!")
