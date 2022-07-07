@@ -42,9 +42,9 @@ test("List.add_left empty"){
   assertEquals(actual, expected)
 }
 
-test("ListofLists.add_right"){
+test("ListofLists.add_left"){
   val expected = List(List(1), List(2))
-  val actual = List.of(List(1)).add_right(List(2))
+  val actual = List.of(List(2)).add_left(List(1))
   assertEquals(actual, expected)
 }
 
