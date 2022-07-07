@@ -23,12 +23,25 @@ test("List constructor"){
   assertEquals(actual, expected)
 }
 
-// test("List.grouped"){
-//   val expected = List(List(0, 1), List(2, 3))
-//   var temp = List(0, 1, 2, 3)
-//   val actual = temp.grouped(2)
-//   assertEquals(actual, expected)
-// }
+test("List.grouped"){
+  val expected = List(List(0, 1), List(2, 3))
+  var temp = List(0, 1, 2, 3)
+  val actual = temp.grouped(2)
+  assertEquals(actual, expected)
+}
+
+test("List.reverse empty"){
+  val expected = List()
+  val actual = List().reverse
+  assertEquals(actual, expected)
+}
+
+test("List.reverse"){
+  val expected = List(3, 2, 1)
+  val temp_list = List(1, 2, 3)
+  val actual = temp_list.reverse
+  assertEquals(actual, expected)
+}
 
 test("List.add_left"){
   val expected = List(0, 1, 2, 3)
