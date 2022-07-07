@@ -3,3 +3,7 @@
 foldLeft: tail recursive implementation
 
 grouped: tail recursive implementation
+
+sliding: tail recursive implementation
+
+windowed: tail recursive implementaiton
