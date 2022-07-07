@@ -19,22 +19,14 @@ enum List[+A] {
   }
 
   def add_left[B >: A](z: B) : List[B] = {
-    val temp: List[B] = List(z)
-    def f(xs: List[B], acc: List[B]) : List[B] = {
-      xs match {
-        case Nil => acc
-        case Cons(head, tail) => f(tail, acc)
-      }
-    }
-    f(this, temp)
+    return Cons(z, this)
   }
 
   def add_right[B >: A](z: B) : List[B] = {
-    var rev = this.reverse
-    return (rev.add_left(z)).reverse
+    return (Cons(z, this.reverse)).reverse
   }
 
-  def foldLeft[A, B](xs: List[A], z: B)(op: (B, A) => B): B = {
+  def foldLeft[B](z: B)(op: (B, A) => B): B = {
     @tailrec
     def f(xs: List[A], acc: B): B = {
     xs match {
@@ -42,32 +34,41 @@ enum List[+A] {
       case Cons(xh, xt) => f(xt, op(acc, xh))
     }
   }
-    f(xs, z)
+    f(this, z)
 }
-  def grouped[B >: A](xs: List[B], window: Int): List[List[B]] = {
+
+  def grouped[B >: A](window: Int): List[List[B]] = {
+    if (window == 0)
+      this
     @tailrec
     def f(xs: List[B], window: Int, acc: List[List[B]], temp: List[B], count: Int): List[List[B]] = {
-      xs match {
-        case Nil if count == 0 => {
-          return acc
+      this match {
+        case Nil => {
+          if count == 1
+            then return acc // if there's no sublist(temp), just return listoflists
+          else return acc.add_right(temp) // if there's a sublist (temp), push it in acc and then return
         }
-        case Nil if count > 0 => {
-          return acc.add_right(temp)
-        }
-        case Cons(head, tail) if count < window => {
-          var buf = temp.add_right(head)
-          var i = count + 1
-          f(tail, window, acc, temp, i)
-        }
-        case Cons(head, tail) if count == window => {
-          acc.add_right(temp)
-          f(tail, window, acc, Nil, 0)
+
+        case Cons(head, tail) => {
+          if count < window
+            then f(tail, window, acc, temp.add_right(head), count + 1) // if (count < window) -> push element into sublist and count++
+          else f(tail, window, acc.add_right(temp), Nil, 1) // if (count == window) -> push sublist (temp) in acc and empty temp
         }
       }
     }
-    f(xs, window, Nil, Nil, 0)
+    f(this, window, Nil, Nil, 1)
+  }
+/*
+  def sliding[B >: A](window: Int): List[List[A]] = {
+    @tailrec
+    def()
+    this match{
+      case Nil => 
+    }
   }
 
+  def windowed[B >: A](step: Int, window: Int)
+  */
 }
 
 import List.*
