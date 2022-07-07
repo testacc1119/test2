@@ -30,6 +30,13 @@ test("List.grouped"){
   assertEquals(actual, expected)
 }
 
+test("List.sliding"){
+  val expected = List(List(1, 2, 3), List(2, 3, 4))
+  var temp = List(1, 2, 3, 4)
+  val actual = temp.sliding(3)
+  assertEquals(actual, expected)
+}
+
 test("List.reverse empty"){
   val expected = List()
   val actual = List().reverse
