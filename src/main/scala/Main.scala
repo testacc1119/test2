@@ -90,6 +90,4 @@ object List:
     xs.foldRight(Nil: List[A]) { case (x, acc) => Cons(x, acc) }
 
 @main def hello: Unit = 
-  var list = List(List(1,2), List(2,3))
-  var list1 = List(1,2,3,4).grouped(2)
-  println(list.toString)
+  println("It works!")
