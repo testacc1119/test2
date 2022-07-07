@@ -1,10 +1,22 @@
 package dyhas.bo.lab1
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 
 enum List[+A] {
   case Nil
   case Cons(hd: A, tl: List[A])
+
+  override def toString: String = {
+    @tailrec
+    def go(sb: mutable.StringBuilder, as: List[A]): String = {
+      as match {
+        case Nil => sb.result
+        case Cons(h, t) => go(sb.append(h).append(if t == Nil then "]" else ", "), t)
+      }
+    }
+    go(new mutable.StringBuilder("["), this)
+  }
 
   def reverse: List[A] = {
     @tailrec
@@ -19,11 +31,11 @@ enum List[+A] {
   }
 
   def add_left[B >: A](z: B) : List[B] = {
-    return Cons(z, this)
+    Cons(z, this)
   }
 
   def add_right[B >: A](z: B) : List[B] = {
-    return (Cons(z, this.reverse)).reverse
+    (Cons(z, this.reverse)).reverse
   }
 
   def foldLeft[B](z: B)(op: (B, A) => B): B = {
@@ -39,36 +51,36 @@ enum List[+A] {
 
   def grouped[B >: A](window: Int): List[List[B]] = {
     if (window == 0)
-      this
+      List(this)
     @tailrec
     def f(xs: List[B], window: Int, acc: List[List[B]], temp: List[B], count: Int): List[List[B]] = {
-      this match {
+      xs match {
         case Nil => {
-          if count == 1
-            then return acc // if there's no sublist(temp), just return listoflists
-          else return acc.add_right(temp) // if there's a sublist (temp), push it in acc and then return
+          if count == 0
+            then acc // if there's no sublist(temp), just return listoflists
+          else acc.add_right(temp) // if there's a sublist (temp), push it in acc and then return
         }
 
         case Cons(head, tail) => {
-          if count < window
+          if count < (window - 1)
             then f(tail, window, acc, temp.add_right(head), count + 1) // if (count < window) -> push element into sublist and count++
-          else f(tail, window, acc.add_right(temp), Nil, 1) // if (count == window) -> push sublist (temp) in acc and empty temp
+          else f(tail, window, acc.add_right(temp.add_right(head)), Nil, 0) // if (count == window) -> push sublist (temp) in acc and empty temp
         }
       }
     }
-    f(this, window, Nil, Nil, 1)
-  }
-/*
-  def sliding[B >: A](window: Int): List[List[A]] = {
-    @tailrec
-    def()
-    this match{
-      case Nil => 
-    }
+    f(this, window, Nil, Nil, 0)
   }
 
-  def windowed[B >: A](step: Int, window: Int)
-  */
+  // def sliding[B >: A](window: Int): List[List[A]] = {
+  //   @tailrec
+  //   def f()
+  //   this match{
+  //     case Nil => 
+  //   }
+  // }
+
+  // def windowed[B >: A](step: Int, window: Int)
+  // */
 }
 
 import List.*
@@ -78,4 +90,6 @@ object List:
     xs.foldRight(Nil: List[A]) { case (x, acc) => Cons(x, acc) }
 
 @main def hello: Unit = 
-  println("I work!")
+  var list = List(List(1,2), List(2,3))
+  var list1 = List(1,2,3,4).grouped(2)
+  println(list.toString)
